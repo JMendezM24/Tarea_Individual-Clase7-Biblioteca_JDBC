@@ -42,8 +42,38 @@ INSERT IGNORE INTO prestamos (id, libro_id, nombre_estudiante, fecha_prestamo, f
     (2, 3, 'Carlos Perez', '2026-08-15', NULL),
     (3, 5, 'Maria Gonzalez', '2026-08-20', NULL);
     
--- EJERCICIO PROPUESTO (PARA LA CASA):
--- Consulta para verificar el conteo total de préstamos de un libro específico (id = 3).
--- Utiliza la función de agregación COUNT(*) para contar el total de registros en
--- la historia del libro, sin importar si ya fueron devueltos o están activos.
-SELECT COUNT(*) FROM prestamos WHERE libro_id = 3;    
+-- ============================================================================
+-- CONSULTAS DE VERIFICACIÓN Y REPORTES (CLASE 7)
+-- ============================================================================
+
+-- 1. Ver préstamos activos incluyendo el título del libro (Opción 5 del menú / JOIN)
+SELECT 
+    p.id, 
+    p.libro_id, 
+    l.titulo AS titulo_libro, 
+    p.nombre_estudiante, 
+    p.fecha_prestamo 
+FROM prestamos p
+JOIN libros l ON p.libro_id = l.id
+WHERE p.fecha_devolucion IS NULL;
+
+-- 2. Identificar los libros que NO tienen préstamos activos (Opción 6 del menú / ReporteService)
+SELECT l.* 
+FROM libros l
+LEFT JOIN prestamos p ON l.id = p.libro_id AND p.fecha_devolucion IS NULL
+WHERE p.id IS NULL;
+
+-- 3. Contar la cantidad de préstamos activos agrupados por título (Opción 7 del menú / ReporteService)
+SELECT 
+    l.titulo, 
+    COUNT(p.id) AS total_activos
+FROM prestamos p
+JOIN libros l ON p.libro_id = l.id
+WHERE p.fecha_devolucion IS NULL
+GROUP BY l.titulo;
+
+-- 4. EJERCICIO PARA LA CASA: Conteo histórico total de préstamos para un libro específico (ej. ID = 3)
+-- (Cuenta todos los préstamos registrados en la historia, estén activos o devueltos)
+SELECT COUNT(*) AS total_prestamos_historicos 
+FROM prestamos 
+WHERE libro_id = 3; 
