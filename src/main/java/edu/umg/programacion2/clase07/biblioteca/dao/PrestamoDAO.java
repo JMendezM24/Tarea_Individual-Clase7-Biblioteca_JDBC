@@ -26,7 +26,7 @@ public class PrestamoDAO {
 
     private static final String URL = "jdbc:mysql://localhost:3306/prog2_db?useSSL=false&serverTimezone=UTC";
     private static final String USUARIO = "root";
-    private static final String PASSWORD = "tu_password_aqui";
+    private static final String PASSWORD = System.getenv("DB_PASSWORD");
 
     // Repaso: INSERT con generated keys, igual que EstudianteDAO.crear().
     public int registrarPrestamo(Prestamo prestamo) throws SQLException {
@@ -77,8 +77,8 @@ public class PrestamoDAO {
      * consulta.
      *
      * Salida esperada con los datos de sql/schema.sql:
-     *   "Clean Code" prestado a Carlos Perez desde 2026-08-15
-     *   "1984" prestado a Maria Gonzalez desde 2026-08-20
+     *    "Clean Code" prestado a Carlos Perez desde 2026-08-15
+     *    "1984" prestado a Maria Gonzalez desde 2026-08-20
      *
      * Pistas:
      * 1. La consulta es:
@@ -97,8 +97,48 @@ public class PrestamoDAO {
      */
     public List<PrestamoDetalle> listarPrestamosActivosConLibro() throws SQLException {
         List<PrestamoDetalle> resultado = new ArrayList<>();
-        // TODO: ejecutar la consulta con JOIN descrita arriba y llenar "resultado".
+        String sql = "SELECT p.nombre_estudiante, p.fecha_prestamo, l.titulo "
+                   + "FROM prestamos p "
+                   + "JOIN libros l ON p.libro_id = l.id "
+                   + "WHERE p.fecha_devolucion IS NULL "
+                   + "ORDER BY p.fecha_prestamo";
+
+        try (Connection conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
+             PreparedStatement statement = conexion.prepareStatement(sql);
+             ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                String titulo = rs.getString("titulo");
+                String nombreEstudiante = rs.getString("nombre_estudiante");
+                LocalDate fechaPrestamo = rs.getDate("fecha_prestamo").toLocalDate();
+
+                PrestamoDetalle detalle = new PrestamoDetalle(titulo, nombreEstudiante, fechaPrestamo);
+                resultado.add(detalle);
+            }
+        }
 
         return resultado;
+    }
+
+    /**
+     * Ejercicio propuesto (para la casa):
+     * Cuenta cuantas veces se ha prestado un libro especifico en toda su historia.
+     */
+    public int contarPrestamosPorLibro(int libroId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM prestamos WHERE libro_id = ?";
+
+        try (Connection conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
+             PreparedStatement statement = conexion.prepareStatement(sql)) {
+
+            statement.setInt(1, libroId);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+
+        return 0;
     }
 }

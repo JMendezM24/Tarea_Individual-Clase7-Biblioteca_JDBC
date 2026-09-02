@@ -41,3 +41,9 @@ INSERT IGNORE INTO prestamos (id, libro_id, nombre_estudiante, fecha_prestamo, f
     (1, 3, 'Ana Lopez', '2026-08-01', '2026-08-10'),
     (2, 3, 'Carlos Perez', '2026-08-15', NULL),
     (3, 5, 'Maria Gonzalez', '2026-08-20', NULL);
+    
+-- EJERCICIO PROPUESTO (PARA LA CASA):
+-- Consulta para verificar el conteo total de préstamos de un libro específico (id = 3).
+-- Utiliza la función de agregación COUNT(*) para contar el total de registros en
+-- la historia del libro, sin importar si ya fueron devueltos o están activos.
+SELECT COUNT(*) FROM prestamos WHERE libro_id = 3;    
