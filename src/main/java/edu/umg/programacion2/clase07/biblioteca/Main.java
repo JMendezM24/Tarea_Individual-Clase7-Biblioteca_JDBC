@@ -60,13 +60,16 @@ public class Main {
                     reporteConteoPorTitulo();
                     break;
                 case 8:
+                    reporteConteoHistoricoPorLibro();
+                    break;
+                case 9:
                     System.out.println("Hasta luego.");
                     break;
                 default:
                     System.out.println("Opcion invalida. Intenta de nuevo.");
             }
             System.out.println();
-        } while (opcion != 8);
+        } while (opcion != 9);
 
         teclado.close();
     }
@@ -80,7 +83,8 @@ public class Main {
         System.out.println("5. Ver prestamos activos (con titulo del libro)");
         System.out.println("6. Reporte: libros nunca prestados");
         System.out.println("7. Reporte: conteo de prestamos activos por titulo");
-        System.out.println("8. Salir");
+        System.out.println("8. Reporte: historial total de prestamos por id de libro");
+        System.out.println("9. Salir");
         System.out.print("Elige una opcion: ");
     }
 
@@ -188,6 +192,19 @@ public class Main {
             System.out.println(conteo);
         } catch (SQLException e) {
             System.err.println("Error al generar el reporte: " + e.getMessage());
+        }
+    }
+    
+ // Método helper al final de la clase:
+    private static void reporteConteoHistoricoPorLibro() {
+        System.out.print("ID del libro a consultar: ");
+        int libroId = leerEntero();
+
+        try {
+            int total = prestamoDAO.contarPrestamosPorLibro(libroId);
+            System.out.println("El libro con ID " + libroId + " se ha prestado " + total + " vez/veces en total.");
+        } catch (SQLException e) {
+            System.err.println("Error al consultar el conteo del libro: " + e.getMessage());
         }
     }
 
