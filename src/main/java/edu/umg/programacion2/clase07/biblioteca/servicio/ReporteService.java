@@ -33,8 +33,8 @@ public class ReporteService {
      * EJERCICIO DE LA CLASE: encontrar los libros que NUNCA se han prestado.
      *
      * Salida esperada con los datos de sql/schema.sql:
-     *   [Cien anios de soledad, El principito, Introduction to Algorithms]
-     *   (el orden puede variar, un Set no garantiza orden)
+     *    [Cien anios de soledad, El principito, Introduction to Algorithms]
+     *    (el orden puede variar, un Set no garantiza orden)
      *
      * Pistas:
      * 1. Consigue todos los libros con libroDAO.listarTodos().
@@ -55,7 +55,25 @@ public class ReporteService {
      */
     public Set<Libro> librosNuncaPrestados() throws SQLException {
         Set<Libro> resultado = new HashSet<>();
-        // TODO: usar libroDAO y prestamoDAO para llenar "resultado" segun las pistas de arriba.
+
+        // Paso 1: Conseguir todos los libros registrados en la base de datos
+        List<Libro> todosLosLibros = libroDAO.listarTodos();
+
+        // Paso 2: Conseguir los préstamos activos
+        List<PrestamoDetalle> prestamosActivos = prestamoDAO.listarPrestamosActivosConLibro();
+
+        // Paso 3: Armar un Set<String> con los títulos que SÍ tienen préstamo activo
+        Set<String> titulosPrestados = new HashSet<>();
+        for (PrestamoDetalle detalle : prestamosActivos) {
+            titulosPrestados.add(detalle.getTituloLibro());
+        }
+
+        // Paso 4: Agregar al resultado los libros cuyo título NO esté en el Set de préstamos activos
+        for (Libro libro : todosLosLibros) {
+            if (!titulosPrestados.contains(libro.getTitulo())) {
+                resultado.add(libro);
+            }
+        }
 
         return resultado;
     }
@@ -65,7 +83,7 @@ public class ReporteService {
      * los prestamos activos.
      *
      * Salida esperada con los datos de sql/schema.sql:
-     *   {Clean Code=1, 1984=1}
+     *    {Clean Code=1, 1984=1}
      *
      * Pistas: es el mismo patron de "contador con HashMap" que ya conoces de
      * colecciones: por cada PrestamoDetalle, revisa si su titulo ya esta en
@@ -74,7 +92,12 @@ public class ReporteService {
     public Map<String, Integer> contarPrestamosActivosPorTitulo() throws SQLException {
         Map<String, Integer> conteo = new HashMap<>();
         List<PrestamoDetalle> activos = prestamoDAO.listarPrestamosActivosConLibro();
-        // TODO: recorrer "activos" y llenar "conteo" usando getTituloLibro() como llave.
+
+        // Recorrer los préstamos activos y sumar sus apariciones usando un HashMap
+        for (PrestamoDetalle detalle : activos) {
+            String titulo = detalle.getTituloLibro();
+            conteo.put(titulo, conteo.getOrDefault(titulo, 0) + 1);
+        }
 
         return conteo;
     }
