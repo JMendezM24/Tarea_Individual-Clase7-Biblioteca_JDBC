@@ -1,5 +1,16 @@
 # Clase 7 - Biblioteca (JDBC con relacion 1:N) — Actividad de clase
 
+### ⚙️ Configuración de la Variable de Entorno (`DB_PASSWORD`)
+
+Para ejecutar el proyecto sin hardcodear credenciales en el código, es necesario configurar la variable de entorno `DB_PASSWORD` en Windows:
+
+1. Presiona las teclas **`Windows + R`**, escribe **`sysdm.cpl`** y presiona **Enter**.
+2. Ve a la pestaña **Opciones avanzadas** y haz clic en el botón **Variables de entorno...**
+3. En la sección **Variables de usuario**, haz clic en **Nueva...**
+4. Asigna el nombre **`DB_PASSWORD`** y en valor ingresa tu contraseña de MySQL / MariaDB.
+5. Haz clic en **Aceptar** en todas las ventanas y **reinicia tu IDE o terminal** para aplicar los cambios.
+
+
 Repaso directo de la Clase 5 (`clase05-jdbc-con-maven`): mismo patron de DAO,
 `PreparedStatement`, `try-with-resources` y `Optional`. La novedad es que
 ahora trabajamos con **dos tablas relacionadas** (`libros` y `prestamos`, un
