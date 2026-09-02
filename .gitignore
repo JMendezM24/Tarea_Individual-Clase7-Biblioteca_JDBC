@@ -1,1 +1,44 @@
+# ==========================================
+# Artifactos de Maven y Compilación
+# ==========================================
 target/
+*.class
+*.jar
+*.war
+*.ear
+*.rar
+
+# ==========================================
+# Configuración e Interfaz de Eclipse
+# ==========================================
+.settings/
+.project
+.classpath
+.factorypath
+
+# Metadatos del área de trabajo (Workspace)
+.metadata/
+bin/
+tmp/
+*.tmp
+*.bak
+
+# ==========================================
+# Metadatos de Sistema Operativo
+# ==========================================
+# macOS
+__MACOSX/
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ==========================================
+# Archivos de Registros y Logs
+# ==========================================
+*.log
